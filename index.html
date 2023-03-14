@@ -9,6 +9,7 @@ function f(tabId, changeInfo, tab) {
     if (!titles[tabId]) {
       titles[tabId] = changeInfo.title
     } else if (titles[tabId] === changeInfo.title) {
+      $("body").prepend(`<h1>Your page has been updated in tab ${title}</h1>`)
       // do nothing
     } else {
       chrome.tabs.query({}, function(tabs) {
