@@ -1,48 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title> Information</title>
+  <title>Tab</title>
 </head>
 <body>
-  <h1>Tab Information</h1>
+  <h1>Tab</h1>
   <ul id="tabs-list"></ul>
-  <div id="flag-content"></div>
-
   <script>
-    // function to retrieve flag content
-    function getFlagContent() {
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", "flag.html", true);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          var flagContent = xhr.responseText;
-          var flagContentDiv = document.getElementById("flag-content");
-          flagContentDiv.innerHTML = "<h2>Flag Content</h2>" + flagContent;
-        }
-      }
-      xhr.send();
-    }
-
-    // query all tabs and display their information and contents
+    // query all tabs and display their information
     chrome.tabs.query({}, function(tabs) {
       var tabsList = document.getElementById("tabs-list");
       for (var i = 0; i < tabs.length; i++) {
         var tab = tabs[i];
         var tabItem = document.createElement("li");
-        tabItem.innerHTML = "Tab ID: " + tab.id + ", URL: " + tab.url + ", Title: " + tab.title + "<br>";
+        tabItem.innerHTML = "Tab ID: " + tab.id + ", URL: " + tab.url + ", Title: " + tab.title;
         tabsList.appendChild(tabItem);
-
-        // execute content script to retrieve page contents
-        chrome.tabs.executeScript(tab.id, { code: "document.documentElement.outerHTML;" }, function(result) {
-          var contents = result[0];
-          var contentsItem = document.createElement("pre");
-          contentsItem.innerHTML = contents;
-          tabItem.appendChild(contentsItem);
-        });
       }
-
-      // get flag content and display on page
-      getFlagContent();
     });
   </script>
 </body>
