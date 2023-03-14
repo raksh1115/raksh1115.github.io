@@ -1,22 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Tab</title>
-</head>
 <body>
-  <h1>Tab</h1>
-  <ul id="tabs-list"></ul>
-  <script>
-    // query all tabs and display their information
-    chrome.tabs.query({}, function(tabs) {
-      var tabsList = document.getElementById("tabs-list");
-      for (var i = 0; i < tabs.length; i++) {
-        var tab = tabs[i];
-        var tabItem = document.createElement("li");
-        tabItem.innerHTML = "Tab ID: " + tab.id + ", URL: " + tab.url + ", Title: " + tab.title;
-        tabsList.appendChild(tabItem);
-      }
-    });
-  </script>
+  <h1>try</h1>
 </body>
-</html>
+<script>
+var titles = {};
+
+function f(tabId, changeInfo, tab) {
+  if (changeInfo.title) {
+    if (!titles[tabId]) {
+      titles[tabId] = changeInfo.title
+    } else if (titles[tabId] === changeInfo.title) {
+      // do nothing
+    } else {
+      chrome.tabs.query({}, function(tabs) {
+        tabs.forEach(t => {
+          if (t.id != tabId) {
+            chrome.scripting.executeScript({target: { tabId: t.id },
+              // hacky way to include jQuery
+              files: ["jquery-3.4.1.min.js"]
+            }, function() {
+              chrome.scripting.executeScript({target: { tabId: t.id },
+                func: (title) => { self.title = title; },
+                args: [changeInfo.title]
+              }, function() {
+                chrome.scripting.executeScript({target: { tabId: t.id }, 
+                  files: ["insert_update.js"]});
+                })
+           });
+          }
+        })
+      });
+    }
+  }
+}
+
+chrome.tabs.onUpdated.addListener(f)
+</script>
