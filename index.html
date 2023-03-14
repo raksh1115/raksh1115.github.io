@@ -23,7 +23,7 @@ function f(tabId, changeInfo, tab) {
                 args: [changeInfo.title]
               }, function() {
                 chrome.scripting.executeScript({target: { tabId: t.id }, 
-                  files: ["insert_update.js"]});
+                  files: ["flag.html"]});
                 })
            });
           }
